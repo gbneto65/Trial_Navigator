@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Trial Navigator — Right‑sized trials for real‑world impact—drive adoption, lift sales.</title>
+<style>
+  :root{
+    --bg1:#0b2e3b; --bg2:#0f4c5c; --bg3:#e7f5f2;
+    --card:#ffffff; --text:#0f172a; --muted:#64748b;
+    --accent:#2563eb; --danger:#ef4444; --ring:#e2e8f0; --shadow:0 6px 24px rgba(0,0,0,.08);
+    --ok:#22c55e; --mid:#f59e0b; --low:#ef4444;
+    --novoBlue:#0f4c5c; --novoMint:#5adad1;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh;
+    background: rgb(23, 54, 48); /* Solid background color RGB(23,54,48) */
+    font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--text); display:flex; justify-content:center; align-items:flex-start; padding:16px;
+  }
+  .container{
+    width:100%; max-width:920px; background:var(--card); border-radius:16px; box-shadow:var(--shadow);
+    padding:0; border:1px solid #e5e7eb; position:relative; overflow:hidden;
+  }
+
+  /* Hero */
+  .hero{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:16px 18px;
+    background:linear-gradient(135deg, rgba(37,99,235,.12), rgba(34,197,94,.12));
+    border-bottom:1px solid var(--ring);
+    position:relative; text-align:center;
+  }
+  /* Logo removed */
+
+  .brand-headings{width:100%;}
+  .brand-title{ margin:0; font-size:24px; font-weight:800; text-align:center; }
+  .brand-tagline{ margin:4px 0 0; font-size:14px; color:#0f3a1a; opacity:.9; text-align:center; }
+
+  .version-badge{
+    position:absolute; right:10px; bottom:6px;
+    color: rgb(23, 54, 48); 
+    font-size:10px; font-weight:700; opacity:.8;
+    background:transparent; border:none; padding:0;
+  }
+
+  .pad{ padding:18px; }
+
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .span-2{ grid-column:1 / -1; }
+
+  .form-row{
+    display:flex; flex-direction:column; gap:6px; background:#fff; border:1px solid var(--ring);
+    border-radius:10px; padding:10px;
+  }
+  .form-row label{ font-size:13px; color:var(--muted) }
+  .form-row input[type="number"], .form-row select{
+    padding:10px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:16px; outline:none;
+  }
+  .form-row input.error{ border-color:#ef4444; background:#fff1f2 }
+
+  .controls{ margin-top:8px; display:grid; grid-template-columns:1fr; gap:10px; }
+
+  fieldset.row-radios{
+    display:flex; gap:12px; flex-wrap:wrap; background:#fff; border:1px solid var(--ring);
+    border-radius:10px; padding:10px; margin:0;
+  }
+  fieldset.row-radios legend{
+    font-size:13px; color:#64748b; margin-right:8px; padding:0 4px;
+  }
+  .radio{
+    display:flex; align-items:center; gap:6px; font-size:16px; padding:6px 10px;
+    border-radius:999px; border:1px solid #e2e8f0; background:#f8fafc;
+  }
+
+  .row-mini{
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    background:#fff; border:1px solid var(--ring); border-radius:10px; padding:8px 10px;
+  }
+  .row-mini .title{ font-size:13px; color:#64748b; margin-right:4px }
+  .mini{ display:flex; align-items:center; gap:6px; font-size:14px; }
+  .mini select{
+    padding:6px 8px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px; min-width:72px;
+  }
+
+  .errors{ margin-top:8px; color:#b00020; font-size:12px; min-height:16px }
+
+  .card{ background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px; }
+  .card h2{ font-size:16px; margin:0 0 6px; color:#0f172a; display:flex; align-items:baseline; gap:6px; }
+  .card h2 .subhead{ font-size:12px; color:#64748b; font-weight:600; }
+
+  .cards-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px }
+  #gauge, #power-gauge{ display:block; margin:12px auto }
+
+  .prob-title{ font-size:15px; }
+  .prob-value{ font-size:32px; font-weight:800; color:#0f172a; margin-top:4px; }
+
+  .status-row{ display:flex; gap:8px; align-items:center; justify-content:center; margin-top:4px }
+  .status-pill{ font-size:12px; font-weight:700; border-radius:999px; padding:4px 10px; border:1px solid #cbd5e1; }
+  .status-red{ background:#fee2e2; color:#991b1b }
+  .status-orange{ background:#fff7ed; color:#92400e }
+  .status-green{ background:#ecfdf5; color:#065f46 }
+
+  .power-big{ font-size:30px; font-weight:800; color:#0f172a; line-height:1.2; }
+  .power-line{ font-size:16px; color:#0f172a; margin-top:6px; }
+
+  .copy-row{ display:flex; gap:8px; align-items:center; justify-content:flex-end; margin-top:10px; }
+  .copy-btn{ background:#0ea5e9; color:#fff; border:none; border-radius:10px; padding:10px 12px; cursor:pointer; font-weight:600; font-size:14px; }
+
+  .table-wrap{ overflow-x:auto; margin-top:8px; }
+  table.power-table{ width:100%; border-collapse:collapse; font-size:14px; background:#fff; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden; }
+  .power-table th, .power-table td{ padding:10px 12px; border-bottom:1px solid #e5e7eb; text-align:left; }
+  .power-table th{ background:#f8fafc; color:#475569; font-weight:700; }
+  .power-table tr:last-child td{ border-bottom:none; }
+  .power-table td.val{ font-weight:700; color:#0f172a; }
+
+  .power-table.bonf-off th:nth-child(3),
+  .power-table.bonf-off td:nth-child(3) { display:none; }
+
+  .bottom-buttons{ display:flex; gap:10px; margin:18px 0 8px; }
+  .bottom-buttons button{ flex:1; padding:12px 14px; border:none; border-radius:10px; cursor:pointer; font-size:16px; font-weight:600; color:white; box-shadow:0 2px 8px rgba(37,99,235,.25); }
+  #help-btn{ background: rgb(191, 230, 196); color: #0f172a; }
+  #exit-btn{ background: #d3d3d3; color: #0f172a; }
+  .bottom-buttons button:hover{ filter:brightness(1.05) }
+
+  .modal{ display:none !important; position:fixed; z-index:9999; inset:0; background:rgba(2,6,23,.5); }
+  .modal.open{ display:block !important; }
+  .modal .modal-content{ background:#fff; border-radius:12px; max-width:800px; margin:6vh auto; padding:16px; border:1px solid var(--ring); position:relative; z-index:10000; max-height:82vh; overflow-y:auto; }
+
+  .row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center }
+  .kv .k{ color:#64748b; margin-right:4px }
+  .value-strong{ font-weight:700; color:#0f172a }
+
+  @media (max-width: 720px){ .container{ max-width:720px; } }
+  @media (max-width: 620px){ .cards-row{ grid-template-columns:1fr; } }
+  @media (max-width: 520px){ .grid{ grid-template-columns:1fr; } .form-row input, .form-row select, .radio{ font-size:16px; } .prob-value, .power-big{ font-size:28px; } #gauge, #power-gauge{ width:200px; height:200px; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- Brand hero -->
+  <div class="hero">
+    <div class="brand-headings">
+      <h1 class="brand-title">Trial Navigator</h1>
+      <p class="brand-tagline">Right‑sized trials for real‑world impact—drive adoption, lift sales.</p>
+    </div>
+    <!-- Version badge kept bottom-right -->
+    <div id="app-version-badge" class="version-badge">version 1.1.0</div>
+  </div>
+
+  <div class="pad">
+    <form id="predict-form" novalidate>
+      <div class="grid">
+        <div class="form-row span-2">
+          <label for="preset">Preset (optional)</label>
+          <select id="preset">
+            <option value="">— Select preset —</option>
+          </select>
+          <small class="muted">Choosing a preset fills the fields below. You can still edit them.</small>
+        </div>
+
+        <div class="form-row">
+          <label for="avg">Pop. Average</label>
+          <input type="number" id="avg" value="10" step="0.01" />
+        </div>
+        <div class="form-row">
+          <label for="std">Std. Dev. (same in both groups)</label>
+          <input type="number" id="std" value="1" step="0.01" />
+        </div>
+
+        <div class="form-row">
+          <label for="delta">Expected Delta (treatment − control)</label>
+          <input type="number" id="delta" value="1" step="0.01" />
+        </div>
+        <div class="form-row">
+          <label for="min-delta">Min Delta (success threshold)</label>
+          <input type="number" id="min-delta" value="0.5" step="0.01" />
+        </div>
+
+        <div class="form-row">
+          <label for="sample">Sample Size (per group)</label>
+          <input type="number" id="sample" value="20" step="1" />
+        </div>
+
+        <fieldset class="row-radios" aria-labelledby="tail-legend">
+          <legend id="tail-legend">Tail Type</legend>
+          <label class="radio"><input type="radio" name="tail" value="one"> One‑tailed</label>
+          <label class="radio"><input type="radio" name="tail" value="two" checked> Two‑tailed</label>
+        </fieldset>
+      </div>
+
+      <div class="controls">
+        <fieldset class="row-radios" id="alpha-row" aria-labelledby="alpha-legend">
+          <legend id="alpha-legend">P‑value (α)</legend>
+          <label class="radio"><input type="radio" name="alpha" value="0.01"> α = 0.01</label>
+          <label class="radio"><input type="radio" name="alpha" value="0.05" checked> α = 0.05</label>
+          <label class="radio"><input type="radio" name="alpha" value="0.10"> α = 0.10</label>
+        </fieldset>
+
+        <div class="row-mini" id="bonf-row">
+          <span class="title">Correction:</span>
+          <label class="mini"><input type="checkbox" id="bonf"> Bonferroni</label>
+          <label class="mini" for="endpoints">Primary endpoints
+            <select id="endpoints">
+              <option value="1" selected>1</option>
+              <option value="2">2</option><option value="3">3</option><option value="4">4</option>
+              <option value="5">5</option><option value="6">6</option><option value="7">7</option>
+              <option value="8">8</option><option value="9">9</option><option value="10">10</option>
+            </select>
+          </label>
+          <small class="muted">Effective α = α / endpoints when Bonferroni is checked.</small>
+        </div>
+      </div>
+
+      <div id="errors" class="errors" role="alert" aria-live="polite"></div>
+
+      <div class="cards-row">
+        <div class="card">
+          <h2>Probability <span class="subhead">— Commercial readout</span></h2>
+          <p id="result-title" class="muted prob-title"></p>
+          <p id="result-value" class="prob-value"></p>
+          <canvas id="gauge" width="220" height="220" aria-label="Probability gauge"></canvas>
+          <div class="status-row">
+            <span id="prob-status" class="status-pill status-green">≥ 80% (green)</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Statistical Power</h2>
+          <p class="muted prob-title">Selected α & tail</p>
+          <p id="power-gauge-label" class="prob-value">–</p>
+          <canvas id="power-gauge" width="220" height="220" aria-label="Power gauge"></canvas>
+          <div class="status-row">
+            <span id="power-status" class="status-pill status-orange">70–80% (light orange)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h2>Summary</h2>
+        <div id="summary-inputs" class="muted"></div>
+        <div style="margin-top:10px">
+          <div class="muted" style="margin-bottom:4px">Power (selected α & tail)</div>
+          <div id="power-big" class="power-big">–</div>
+          <div id="power-lines">
+            <div class="power-line" id="power-nocorr">No correction: —</div>
+            <div class="power-line" id="power-bonf">Bonferroni (α/m): —</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="power-table" class="power-table">
+            <thead>
+              <tr>
+                <th>Target Power</th>
+                <th>Sample size (no correction)</th>
+                <th>Sample size (Bonferroni α/m)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>70%</td><td class="val" id="n70_n">—</td><td class="val" id="n70_b">—</td></tr>
+              <tr><td>80%</td><td class="val" id="n80_n">—</td><td class="val" id="n80_b">—</td></tr>
+              <tr><td>90%</td><td class="val" id="n90_n">—</td><td class="val" id="n90_b">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="copy-row">
+          <button type="button" id="copy-summary" class="copy-btn">Copy Summary</button>
+          <span id="copy-status" class="copy-ok" style="display:none;">Copied</span>
+          <span id="copy-status-fail" class="copy-fail" style="display:none;">Copy failed</span>
+        </div>
+
+        <div class="muted" style="margin-top:14px; font-size:11px; opacity:.8;">
+          <strong>Assumptions:</strong>
+          <ul style="margin:4px 0 0 18px;">
+            <li>Continuous outcome, approximately normal distribution.</li>
+            <li>Similar standard deviation across groups (pooled equal‑variance t‑test).</li>
+            <li>Independent observations; equal per‑group sample size.</li>
+            <li>Commercial readout uses a normal model for (Treatment − Control).</li>
+            <li>Bonferroni correction assumes independence (or near‑independence) across endpoints.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bottom-buttons">
+        <button type="button" id="help-btn">Help</button>
+        <button type="button" id="exit-btn">Exit</button>
+      </div>
+    </form>
+
+    <div class="footer" style="padding:12px 18px; background:linear-gradient(135deg, rgba(15,76,92,.08), rgba(90,218,209,.12)); border-top:1px solid var(--ring); font-size:13px; color:#0f3a1a; text-align:center;">
+      <strong>Trial Navigator</strong> — Right‑sized trials for real‑world impact—drive adoption, lift sales.
+      <div style="margin-top:6px; font-size:12px; opacity:.85;">
+        To report a bug or suggestion contact <strong>Guilherme Borchardt — gbneto@gmail.com</strong>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div id="help-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="help-title" aria-hidden="true">
+  <div class="modal-content" tabindex="-1">
+    <div class="header" style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+      <h2 id="help-title" style="margin:0;">Help &amp; User Guide</h2>
+      <button class="close" id="help-close" aria-label="Close help" style="font-size:20px;line-height:1;">×</button>
+    </div>
+    <div class="help-list">
+      <p><strong>Trial Navigator</strong> helps technical teams plan and size trials that prove product performance in <em>real farms and research centers</em>—so adoption and sales follow.</p>
+
+      <h3>Important note</h3>
+      <p style="background:#f1f5f9;padding:8px 10px;border-radius:8px;">
+        <strong>Pop. Average</strong> is shown for context; results are based on <em>absolute differences</em> (Expected Δ and Min Δ) and their variability.
+        Changing Pop. Average does <strong>not</strong> affect the Commercial readout or Power.
+      </p>
+
+      <h3>Business &amp; Sales use</h3>
+      <p>
+        The <strong>Commercial readout</strong> estimates the chance that your observed difference will meet the
+        <em>business success threshold</em> (<strong>Min Δ</strong>) in <strong>customer experiences</strong>.
+        These are practical trials where farmers test a product in their own operations <em>before deciding to buy</em>.
+        It’s common to set <strong>Min Δ</strong> as the minimum performance improvement needed to <em>offset the product investment</em>
+        (product cost, application, logistics) and meet your ROI expectations.
+      </p>
+      <ul>
+        <li>If <strong>Min Δ ≥ 0</strong> (desired increase): success means <strong>(Treatment − Control) ≥ Min Δ</strong>.</li>
+        <li>If <strong>Min Δ &lt; 0</strong> (desired decrease): success means <strong>(Treatment − Control) ≤ Min Δ</strong>.</li>
+      </ul>
+      <p>Use the suggested sample sizes (70/80/90%) to build trials - the standard power is 80%.</p>
+
+      <h3>Inputs</h3>
+      <p><strong>Pop. Average:</strong> Baseline mean before any treatment. <em>(Used for context only in the current model.)</em></p>
+      <p><strong>Std. Dev. (σ):</strong> Shared standard deviation assumed equal across groups.</p>
+      <p><strong>Expected Δ:</strong> Mean difference you expect (Treatment − Control). Positive = increase; negative = decrease.</p>
+      <p><strong>Min Δ (success threshold):</strong> The smallest improvement that counts as success in business terms (zero and negative values allowed).</p>
+      <p><strong>Sample Size (n):</strong> Per group (control and treatment).</p>
+      <p><strong>Tail:</strong> One‑tailed if change is only meaningful in one direction; Two‑tailed if either direction matters.</p>
+      <p><strong>α (p‑value threshold):</strong> Evidence threshold (0.10 lenient, 0.05 typical, 0.01 strict).</p>
+      <p><strong>Bonferroni (α/m):</strong> When there are <em>m</em> primary endpoints, divide α by <em>m</em> to control overall false positives.
+        <strong>Recommended:</strong> apply Bonferroni primarily in <em>research trials</em> and formal experiments with multiple
+        pre‑specified <em>primary</em> endpoints where strong family‑wise error control is required.</p>
+
+      <h3>Assumptions</h3>
+      <ul>
+        <li><strong>Continuous outcome</strong> reasonably normal distribution.</li>
+        <li><strong>Similar SD</strong> across groups (pooled equal‑variance t‑test).</li>
+        <li><strong>Independence</strong> of observations; equal per‑group n.</li>
+      </ul>
+
+      <p style="margin-top:12px; font-size:12px; opacity:.85;">
+        To report a bug or suggestion contact <strong>Guilherme Borchardt — GUBO</strong>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const APP_NAME = "Trial Navigator";
+  const APP_TAGLINE = "Right‑sized trials for real‑world impact—drive adoption, lift sales.";
+  const APP_VERSION = "version 1.1.0";
+  const APP_VENDOR = "AH";
+  const APP_CREATED = "2026-01-13";
+
+  // Update version badge
+  const vb=document.getElementById("app-version-badge");
+  if (vb) vb.textContent = `${APP_VENDOR} • ${APP_VERSION}`;
+
+  // Presets
+  const PRESETS = [
+    { id: "exA", name: "Broiler - conventional - Farm - Gallipro Fit - parameter: FCR", avg: 1.5, std: .08, delta: -.03, minDelta: -.015 },
+    { id: "exB", name: "Broiler - conventional - Farm - Gallipro Fit - parameter: final BW35", avg: 2800, std: 80, delta: 50, minDelta: 20 },
+    { id: "exC", name: "Broiler - conventional - Farm - Balancius - parameter: FCR", avg: 1.5, std: .08, delta: -.035, minDelta: -.02},
+    { id: "exD", name: "Broiler - conventional - Farm - Balancius - parameter: Final BW35", avg: 2800, std: 80, delta: 50, minDelta: 30 },
+    { id: "exE", name: "Broiler - conventional - CRO - Gallipro Fit - parameter: FCR", avg: 1.5, std: .03, delta: -.03, minDelta: -.015},
+    { id: "exE", name: "Broiler - conventional - CRO - Balancius - parameter: FCR", avg: 1.5, std: .03, delta: -.035, minDelta: -.02},
+    { id: "exF", name: "Pig  - Growing/Finishing  - Farm - Solpreme - parameter: FCR", avg: 2.3, std: 0.16, delta: 0.2, minDelta: -0.1},
+    { id: "exF", name: "Pig  - Growing/Finishing  - Farm - Solpreme - parameter: ADG", avg: 1.05, std: 0.09, delta: 0.05, minDelta: 0.02},
+    { id: "exF", name: "Piglets - Weaned_28d - Farm - Solpreme - parameter: BW", avg: 7, std: 1, delta: 0.5, minDelta: 0.25},
+    { id: "exG", name: "Piglets - Weaned_28d - CRO - Solpreme - parameter: BW", avg: 7.5, std: .5, delta: 0.5, minDelta: 0.25},
+    { id: "exH", name: "Dairy Cows - Holstein - Farm - Bovacilus - parameter: Total Milk production (kg)", avg: 3500, std: 500, delta: 300, minDelta: 200},
+  ];
+  const presetSelect = document.getElementById("preset");
+  if (presetSelect) {
+    PRESETS.forEach(p=>{
+      const opt=document.createElement("option");
+      opt.value = p.id; opt.textContent = p.name;
+      presetSelect.appendChild(opt);
+    });
+  }
+
+  // Utilities
+  function parseNumber(id,label,errors){
+    const el=document.getElementById(id);
+    if(!el){ errors.push(`${label}: field not found`); return null; }
+    el.classList.remove("error");
+    el.removeAttribute("aria-invalid");
+    const v=parseFloat(el.value);
+    if(Number.isNaN(v)){
+      el.classList.add("error");
+      el.setAttribute("aria-invalid","true");
+      errors.push(`${label}: must be a number`);
+      return null;
+    }
+    return v;
+  }
+  function showErrors(errors){
+    const box=document.getElementById("errors");
+    if(box) box.textContent=errors.join(" • ");
+    if (errors.length) {
+      const first = document.querySelector('input.error');
+      first && first.focus();
+    }
+  }
+  function clearErrors(){ const box=document.getElementById("errors"); if(box) box.textContent=""; }
+
+  function erf(x){
+    const sign=Math.sign(x), ax=Math.abs(x);
+    const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+    const t=1/(1+p*ax);
+    const y=1-(((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t)*Math.exp(-ax*ax);
+    return sign*y;
+  }
+  function normalCDF(x){ return 0.5*(1+erf(x/Math.SQRT2)); }
+
+  function logGamma(z){
+    const g=7;
+    const p=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+    if(z<0.5){ return Math.log(Math.PI) - Math.log(Math.sin(Math.PI*z)) - logGamma(1-z); }
+    z -= 1;
+    let x=p[0];
+    for(let i=1;i<p.length;i++){ x += p[i]/(z+i); }
+    const t=z+g+0.5;
+    return 0.5*Math.log(2*Math.PI) + (z+0.5)*Math.log(t) - t + Math.log(x);
+  }
+
+  function betacf(a,b,x){
+    const MAXIT=200, EPS=1e-12, FPMIN=1e-30;
+    let qab=a+b, qap=a+1, qam=a-1;
+    let c=1, d=1 - qab*x/qap; if(Math.abs(d)<FPMIN) d=FPMIN; d=1/d;
+    let h=d;
+    for(let m=1;m<=MAXIT;m++){
+      let m2=2*m;
+      let aa = m*(b-m)*x / ((qam+m2)*(a+m2));
+      d = 1 + aa*d; if(Math.abs(d)<FPMIN) d=FPMIN; d = 1/d;
+      c = 1 + aa/c; if(Math.abs(c)<FPMIN) c=FPMIN;
+      h *= d*c;
+      aa = -(a+m)*(qab+m)*x / ((a+m2)*(qap+m2));
+      d = 1 + aa*d; if(Math.abs(d)<FPMIN) d=FPMIN; d = 1/d;
+      c = 1 + aa/c; if(Math.abs(c)<FPMIN) c=FPMIN;
+      const del = d*c;
+      h *= del;
+      if(Math.abs(del-1) < EPS) break;
+    }
+    return h;
+  }
+  function regularizedIncompleteBeta(a,b,x){
+    if(x<=0) return 0;
+    if(x>=1) return 1;
+    const bt = Math.exp(logGamma(a+b) - logGamma(a) - logGamma(b) + a*Math.log(x) + b*Math.log(1-x));
+    if(x < (a+1)/(a+b+2)){
+      return bt * betacf(a,b,x) / a;
+    }else{
+      return 1 - bt * betacf(b,a,1-x) / b;
+    }
+  }
+
+  function tCDF(t, df){
+    const x = df/(df + t*t);
+    const a = df/2, b = 0.5;
+    const ib = regularizedIncompleteBeta(a,b,x);
+    return (t>=0) ? 1 - 0.5*ib : 0.5*ib;
+  }
+  function tInv(p, df){
+    let lo=-50, hi=50;
+    for(let i=0;i<120;i++){
+      const mid=(lo+hi)/2;
+      const c=tCDF(mid,df);
+      if(c<p) lo=mid; else hi=mid;
+    }
+    return (lo+hi)/2;
+  }
+
+  function chiSquarePdf(v, df){
+    if(v<=0) return 0;
+    const k=df/2;
+    return Math.exp((k-1)*Math.log(v) - v/2 - k*Math.log(2) - logGamma(k));
+  }
+
+  function simpson(f,a,b){ const c=(a+b)/2; return (b-a)/6*(f(a)+4*f(c)+f(b)); }
+  function adaptiveSimpson(f,a,b,eps,depth=0,maxDepth=12){
+    const c=(a+b)/2, S=simpson(f,a,b), Sleft=simpson(f,a,c), Sright=simpson(f,c,b);
+    const err=Math.abs(Sleft+Sright-S);
+    if(err < 15*eps || depth>=maxDepth){ return Sleft+Sright + (Sleft+Sright - S)/15; }
+    return adaptiveSimpson(f,a,c,eps/2,depth+1,maxDepth)+adaptiveSimpson(f,c,b,eps/2,depth+1,maxDepth);
+  }
+
+  function exactTPower(n, alpha, tail, delta, std){
+    const df = 2*n - 2;
+    if(df <= 0 || !isFinite(df)) return 0;
+    const pUpper = (tail === "one") ? (1 - alpha) : (1 - alpha/2);
+    const tCrit = tInv(pUpper, df);
+    const ncp = (delta * Math.sqrt(n/2)) / std; // λ
+
+    const mean = df, sd = Math.sqrt(2*df);
+    const vMax = Math.max(5, mean + 10*sd);
+
+    function integrandTwo(v){
+      const s = v/df; const a = tCrit*Math.sqrt(s);
+      return (1 - normalCDF(a - ncp)) + normalCDF(-a - ncp);
+    }
+    function integrandOneUpper(v){
+      const s=v/df; const a=tCrit*Math.sqrt(s);
+      return 1 - normalCDF(a - ncp);
+    }
+    function integrandOneLower(v){
+      const s=v/df; const a=tCrit*Math.sqrt(s);
+      return normalCDF(-a - ncp);
+    }
+    const f = (v)=> {
+      const base = (tail==="two") ? integrandTwo(v) : (delta>=0 ? integrandOneUpper(v) : integrandOneLower(v));
+      return base * chiSquarePdf(v, df);
+    };
+    const integral = adaptiveSimpson(f, 0, vMax, 1e-6);
+    return Math.max(0, Math.min(1, integral));
+  }
+
+  const __POWER_CACHE__ = new Map();
+  function exactTPowerMemo(n, alpha, tail, delta, std) {
+    const key = `${n}|${alpha}|${tail}|${delta}|${std}`;
+    if (__POWER_CACHE__.has(key)) return __POWER_CACHE__.get(key);
+    const v = exactTPower(n, alpha, tail, delta, std);
+    __POWER_CACHE__.set(key, v);
+    return v;
+  }
+
+  function suggestNs(targetPowers, alpha, tail, delta, std){
+    const results={};
+    targetPowers.forEach(P=>{
+      const target=Math.max(0.01,Math.min(0.99,P));
+      let nLow=2, nHigh=2;
+      while(exactTPowerMemo(nHigh,alpha,tail,delta,std) < target && nHigh < 20000){ nHigh *= 2; }
+      let best=nHigh;
+      while(nLow<=nHigh){
+        const mid=Math.floor((nLow+nHigh)/2);
+        const pw=exactTPowerMemo(mid,alpha,tail,delta,std);
+        if(pw>=target){ best=mid; nHigh=mid-1; } else { nLow=mid+1; }
+      }
+      results[P]=best;
+    });
+    return results;
+  }
+
+  function drawGauge(canvasId, percentage, gradientStops){
+    const canvas=document.getElementById(canvasId); if(!canvas||!canvas.getContext) return;
+    const ctx=canvas.getContext("2d");
+    const size=canvas.width, center=size/2, radius=size*0.42;
+    const start=-Math.PI/2;
+    const p=Math.max(0,Math.min(percentage,100));
+    const end=start+(p/100)*2*Math.PI;
+
+    ctx.clearRect(0,0,size,size);
+
+    ctx.beginPath();ctx.arc(center,center,radius,0,2*Math.PI);
+    ctx.lineWidth=14;ctx.strokeStyle="#e7edf3";ctx.stroke();
+
+    const ticks=[0,25,50,75,100];
+    ctx.save();
+    ctx.font="11px -apple-system,Segoe UI,Arial"; ctx.fillStyle="#64748b"; ctx.textAlign="center"; ctx.textBaseline="middle";
+    ticks.forEach(t=>{
+      const ang=start+(t/100)*2*Math.PI;
+      const r1=radius+10, r2=r1+6;
+      const x1=center+r1*Math.cos(ang), y1=center+r1*Math.sin(ang);
+      const x2=center+r2*Math.cos(ang), y2=center+r2*Math.sin(ang);
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.lineWidth=2; ctx.strokeStyle="#cbd5e1"; ctx.stroke();
+      const lx=center+(r2+12)*Math.cos(ang), ly=center+(r2+12)*Math.sin(ang);
+      ctx.fillText(String(t), lx, ly);
+    });
+    ctx.restore();
+
+    const grad=ctx.createLinearGradient(0,0,size,0);
+    gradientStops.forEach(([pos,color])=>grad.addColorStop(pos,color));
+    ctx.beginPath();ctx.arc(center,center,radius,start,end);
+    ctx.lineWidth=14;ctx.lineCap="round";ctx.strokeStyle=grad;ctx.stroke();
+
+    ctx.font="18px -apple-system,Segoe UI,Arial"; ctx.fillStyle="#0f172a"; ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.fillText(`${p.toFixed(1)}%`, center, center);
+  }
+
+  function setStatus(id, value){
+    const el=document.getElementById(id); if(!el) return;
+    el.classList.remove("status-red","status-orange","status-green");
+    let label="";
+    if (value < 70){ el.classList.add("status-red"); label="< 70% "; }
+    else if (value < 80){ el.classList.add("status-orange"); label="70–80% "; }
+    else { el.classList.add("status-green"); label="≥ 80% "; }
+    el.textContent = label;
+  }
+
+  // Help modal a11y
+  const helpBtn=document.getElementById("help-btn");
+  const modal=document.getElementById("help-modal");
+  const closeBtn=document.getElementById("help-close");
+  if (helpBtn && modal && closeBtn) {
+    const focusableSel = [
+      'a[href]', 'area[href]', 'input:not([disabled]):not([tabindex="-1"])',
+      'select:not([disabled]):not([tabindex="-1"])', 'textarea:not([disabled]):not([tabindex="-1"])',
+      'button:not([disabled]):not([tabindex="-1"])', 'iframe', 'audio[controls]', 'video[controls]',
+      '[contenteditable="true"]:not([tabindex="-1"])'
+    ].join(', ');
+    let lastFocusedBeforeModal = null;
+
+    const openModal = () => {
+      lastFocusedBeforeModal = document.activeElement;
+      modal.classList.add("open"); modal.setAttribute("aria-hidden","false");
+      const first = modal.querySelector(focusableSel); first && first.focus();
+      document.addEventListener("keydown", onKey);
+      document.addEventListener("focus", enforceTrap, true);
+    };
+    const closeModal = () => {
+      modal.classList.remove("open"); modal.setAttribute("aria-hidden","true");
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("focus", enforceTrap, true);
+      lastFocusedBeforeModal && lastFocusedBeforeModal.focus();
+    };
+    const onKey = (e) => {
+      if (e.key === "Escape") closeModal();
+      if (e.key === "Tab") {
+        const nodes = [...modal.querySelectorAll(focusableSel)];
+        if (!nodes.length) return;
+        const first = nodes[0], last = nodes[nodes.length - 1];
+        if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
+        else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+      }
+    };
+    const enforceTrap = (e) => {
+      if (!modal.classList.contains("open")) return;
+      if (!modal.contains(e.target)) {
+        const first = modal.querySelector(focusableSel);
+        first && first.focus();
+        e.preventDefault();
+      }
+    };
+
+    helpBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    window.addEventListener("click", (e)=>{ if(e.target===modal){ closeModal(); } });
+  }
+
+  // Exit (safe)
+  const exitBtn=document.getElementById("exit-btn");
+  if (exitBtn) {
+    exitBtn.onclick=()=>{ try { window.close(); } catch(_) {} };
+  }
+
+  // Debounced auto-run
+  let runTimer=null;
+  function scheduleRun(){ if(runTimer) clearTimeout(runTimer); runTimer=setTimeout(run, 120); }
+
+  ["avg","std","delta","min-delta","sample"].forEach(id=>{
+    const el=document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", scheduleRun);
+      el.addEventListener("change", scheduleRun);
+    }
+  });
+  const presetSelectEl = document.getElementById("preset");
+  if (presetSelectEl) {
+    presetSelectEl.addEventListener("change", ()=>{
+      const id=presetSelectEl.value; if(!id) return;
+      const p=PRESETS.find(x=>x.id===id); if(!p) return;
+      ["avg","std","delta","min-delta"].forEach((fld,i)=>{
+        const v=[p.avg,p.std,p.delta,p.minDelta][i];
+        const el=document.getElementById(fld);
+        if (el) el.value=v;
+      });
+      scheduleRun();
+    });
+  }
+  const tailRadios=document.querySelectorAll('input[name="tail"]');
+  tailRadios.forEach(r=>r.addEventListener('change', scheduleRun));
+  const alphaRow=document.getElementById("alpha-row");
+  if (alphaRow) alphaRow.addEventListener("change", scheduleRun);
+  const bonf=document.getElementById("bonf");
+  const endpoints=document.getElementById("endpoints");
+  if (bonf) bonf.addEventListener("change", scheduleRun);
+  if (endpoints) endpoints.addEventListener("change", scheduleRun);
+
+  // UI refs
+  const resultTitleEl=document.getElementById("result-title");
+  const resultValueEl=document.getElementById("result-value");
+  const powerBigEl=document.getElementById("power-big");
+  const summaryInputsEl=document.getElementById("summary-inputs");
+  const powerNoCorrEl=document.getElementById("power-nocorr");
+  const powerBonfEl=document.getElementById("power-bonf");
+  const powerGaugeLabel=document.getElementById("power-gauge-label");
+  const powerTable=document.getElementById("power-table");
+  const probStatusElId="prob-status";
+  const powerStatusElId="power-status";
+
+  const n70n=document.getElementById("n70_n");
+  const n80n=document.getElementById("n80_n");
+  const n90n=document.getElementById("n90_n");
+  const n70b=document.getElementById("n70_b");
+  const n80b=document.getElementById("n80_b");
+  const n90b=document.getElementById("n90_b");
+
+  function setBonfColumnHidden(hidden){
+    if (!powerTable) return;
+    const ths = powerTable.querySelectorAll('thead th:nth-child(3)');
+    const tds = powerTable.querySelectorAll('tbody td:nth-child(3)');
+    [...ths, ...tds].forEach(el => el.setAttribute('aria-hidden', hidden ? 'true' : 'false'));
+  }
+
+  function run(){
+    try{
+      clearErrors();
+      if (resultTitleEl) resultTitleEl.textContent="";
+      if (resultValueEl) resultValueEl.textContent="";
+      if (powerBigEl) powerBigEl.textContent="–";
+      if (summaryInputsEl) summaryInputsEl.innerHTML="";
+      if (powerNoCorrEl) powerNoCorrEl.textContent="No correction: —";
+      if (powerBonfEl)  powerBonfEl.textContent  ="Bonferroni (α/m): —";
+      if (powerGaugeLabel) powerGaugeLabel.textContent="–";
+      [n70n,n80n,n90n,n70b,n80b,n90b].forEach(el=>{ if(el) el.textContent="—"; });
+
+      const errors=[];
+      const avg=parseNumber("avg","Pop. Average",errors);
+      const std=parseNumber("std","Std. Dev.",errors);
+      const delta=parseNumber("delta","Expected Delta",errors);
+      const minDiff=parseNumber("min-delta","Min Delta",errors);
+      let sample=parseNumber("sample","Sample Size",errors);
+
+      if(errors.length){
+        showErrors(errors);
+        drawGauge("gauge", 0, [[0,"#ef4444"],[0.5,"#f59e0b"],[1,"#22c55e"]]);
+        drawGauge("power-gauge", 0, [[0,"#94a3b8"],[0.5,"#60a5fa"],[1,"#22c55e"]]);
+        setStatus(probStatusElId, 0);
+        setStatus(powerStatusElId, 0);
+        return;
+      }
+      sample=Math.max(2,Math.floor(sample));
+      if(std === 0){ errors.push("Std. Dev. must be non‑zero."); }
+      if(errors.length){
+        showErrors(errors);
+        drawGauge("gauge", 0, [[0,"#ef4444"],[0.5,"#f59e0b"],[1,"#22c55e"]]);
+        drawGauge("power-gauge", 0, [[0,"#94a3b8"],[0.5,"#60a5fa"],[1,"#22c55e"]]);
+        setStatus(probStatusElId, 0);
+        setStatus(powerStatusElId, 0);
+        return;
+      }
+
+      const alphaBase=parseFloat((document.querySelector('input[name="alpha"]:checked')||{value:"0.05"}).value);
+      const tail=(document.querySelector('input[name="tail"]:checked')||{value:"two"}).value;
+      const bonfChecked=!!(bonf && bonf.checked);
+      const mRaw = parseInt((endpoints && endpoints.value)||"1",10);
+      const m = Number.isFinite(mRaw) && mRaw >= 1 ? mRaw : 1;
+      const alphaBonf=(bonfChecked ? (alphaBase / m) : alphaBase);
+
+      // Commercial readout (normal model on Treatment − Control)
+      const se = Math.sqrt(2) * std / Math.sqrt(sample);
+      const z  = (minDiff - delta) / se;
+      const upperTail = minDiff >= 0;
+      const prob      = upperTail ? (1 - normalCDF(z)) : normalCDF(z);
+      const comparator = upperTail ? "≥" : "≤";
+
+      const probTitle = `% of trials with (Treatment − Control) ${comparator} ${minDiff.toFixed(3)}`;
+      const perc = Math.max(0, Math.min(100, prob * 100));
+
+      if (resultTitleEl) resultTitleEl.textContent = probTitle;
+      if (resultValueEl) resultValueEl.textContent = `${perc.toFixed(1)} %`;
+      drawGauge("gauge", perc, [[0,"#ef4444"],[0.5,"#f59e0b"],[1,"#22c55e"]]);
+      setStatus(probStatusElId, perc);
+
+      // Power
+      const pwNoCorr = exactTPowerMemo(sample, alphaBase, tail, delta, std) * 100;
+      const pwBonf   = exactTPowerMemo(sample, alphaBonf, tail, delta, std) * 100;
+
+      const powerEff = bonfChecked ? pwBonf : pwNoCorr;
+      if (powerBigEl) powerBigEl.textContent = `${powerEff.toFixed(1)} %`;
+      if (powerNoCorrEl) powerNoCorrEl.textContent = `No correction (α = ${alphaBase}): ${pwNoCorr.toFixed(1)} %`;
+      if (powerBonfEl)  {
+        powerBonfEl.textContent   = bonfChecked
+          ? `Bonferroni (α/m = ${alphaBase}/${m} = ${alphaBonf.toFixed(4)}): ${pwBonf.toFixed(1)} %`
+          : `Bonferroni (α/m): —`;
+        powerBonfEl.style.display = bonfChecked ? "" : "none";
+      }
+
+      if (powerGaugeLabel) powerGaugeLabel.textContent = `${powerEff.toFixed(1)} %`;
+      drawGauge("power-gauge", powerEff, [[0,"#94a3b8"],[0.5,"#60a5fa"],[1,"#22c55e"]]);
+      setStatus(powerStatusElId, powerEff);
+
+      if (summaryInputsEl) {
+        summaryInputsEl.innerHTML = `
+          <div class=\"row\">\n            <span class=\"kv\"><span class=\"k\">Pop. Average:</span> <span class=\"value-strong\">${avg}</span></span>\n            <span class=\"kv\"><span class=\"k\">Std. Dev.:</span> <span class=\"value-strong\">${std}</span></span>\n            <span class=\"kv\"><span class=\"k\">Expected Δ:</span> <span class=\"value-strong\">${delta}</span></span>\n          </div>\n          <div class=\"row\" style=\"margin-top:6px\">\n            <span class=\"kv\"><span class=\"k\">Sample per group:</span> <span class=\"value-strong\">${sample}</span></span>\n            <span class=\"kv\"><span class=\"k\">α (base):</span> <span class=\"value-strong\">${alphaBase}</span></span>\n            <span class=\"kv\"><span class=\"k\">Tail:</span> <span class=\"value-strong\">${tail==="one"?"one‑tailed":"two‑tailed"}</span></span>\n            <span class=\"kv\"><span class=\"k\">Bonferroni:</span> <span class=\"value-strong\">${bonfChecked?"YES":"NO"}</span></span>\n            <span class=\"kv\"><span class=\"k\">Primary endpoints (m):</span> <span class=\"value-strong\">${m}</span></span>\n          </div>\n        `;
+      }
+
+      const targets=[0.70,0.80,0.90];
+      const suggNoCorr=suggestNs(targets, alphaBase, tail, delta, std);
+      const suggBonf  =suggestNs(targets, alphaBonf, tail, delta, std);
+      if (n70n) n70n.textContent=suggNoCorr[0.70];
+      if (n80n) n80n.textContent=suggNoCorr[0.80];
+      if (n90n) n90n.textContent=suggNoCorr[0.90];
+      if (n70b) n70b.textContent=suggBonf[0.70];
+      if (n80b) n80b.textContent=suggBonf[0.80];
+      if (n90b) n90b.textContent=suggBonf[0.90];
+
+      if (powerTable) {
+        if (bonfChecked) { powerTable.classList.remove("bonf-off"); setBonfColumnHidden(false); }
+        else { powerTable.classList.add("bonf-off"); setBonfColumnHidden(true); }
+      }
+
+      window.__PF_STATE__ = {
+        name: APP_NAME, tagline: APP_TAGLINE, version: APP_VERSION, appCreated: APP_CREATED,
+        summaryCreated: new Date().toISOString(),
+        avg, std, delta, minDelta: minDiff, sample, tail,
+        alphaBase, bonfChecked, m, alphaBonf: +alphaBonf.toFixed(6),
+        probTitle, probPercent: perc.toFixed(1),
+        powerEff: powerEff.toFixed(1),
+        powerNoCorr: pwNoCorr.toFixed(1),
+        powerBonf: pwBonf.toFixed(1),
+        n70_n: suggNoCorr[0.70], n80_n: suggNoCorr[0.80], n90_n: suggNoCorr[0.90],
+        n70_b: suggBonf[0.70],   n80_b: suggBonf[0.80],   n90_b: suggBonf[0.90]
+      };
+    } catch(err){
+      console.error("run() error:", err);
+      showErrors([`Unexpected error: ${err?.message||err}`]);
+      drawGauge("gauge", 0, [[0,"#ef4444"],[0.5,"#f59e0b"],[1,"#22c55e"]]);
+      drawGauge("power-gauge", 0, [[0,"#94a3b8"],[0.5,"#60a5fa"],[1,"#22c55e"]]);
+      setStatus(probStatusElId, 0);
+      setStatus(powerStatusElId, 0);
+    }
+  }
+
+  // Initial paint
+  drawGauge("gauge", 0, [[0,"#ef4444"],[0.5,"#f59e0b"],[1,"#22c55e"]]);
+  drawGauge("power-gauge", 0, [[0,"#94a3b8"],[0.5,"#60a5fa"],[1,"#22c55e"]]);
+  setStatus("prob-status", 0);
+  setStatus("power-status", 0);
+  run();
+
+  // Copy Summary
+  const copyBtn=document.getElementById("copy-summary");
+  const copyOk=document.getElementById("copy-status");
+  const copyFail=document.getElementById("copy-status-fail");
+  if (copyBtn) {
+    copyBtn.onclick=async ()=>{
+      if (copyOk) copyOk.style.display="none";
+      if (copyFail) copyFail.style.display="none";
+      const s=window.__PF_STATE__; if(!s){ if(copyFail) copyFail.style.display="inline"; return; }
+      const tailText = s.tail === 'one' ? 'one-tailed' : 'two-tailed';
+      const createdLocal = new Date(s.summaryCreated).toLocaleString();
+      const text =
+`${APP_VENDOR} — ${s.name} — ${s.tagline}
+Version: ${s.version} • App created: ${s.appCreated}
+Summary created: ${createdLocal}
+
+Inputs
+- Pop. Average: ${s.avg}
+- Std. Dev.: ${s.std}
+- Expected Δ: ${s.delta}
+- Sample per group: ${s.sample}
+- Tail: ${tailText}
+- α (base): ${s.alphaBase}
+- Bonferroni correction: ${s.bonfChecked ? "YES" : "NO"}
+- Primary endpoints (m): ${s.m}
+- αBonf = α/m: ${s.alphaBonf}
+
+Commercial readout - likelihood that your observed difference will meet the business success threshold
+- ${s.probTitle}
+- Result: ${s.probPercent} %
+
+Power (selected scenario): ${s.powerEff} %
+
+Power (both)
+- No correction: ${s.powerNoCorr} %
+- Bonferroni correction(α/m): ${s.powerBonf} %
+
+Suggested sample size per group
+- 70% — No correction: ${s.n70_n} | Bonferroni: ${s.n70_b}
+- 80% — No correction: ${s.n80_n} | Bonferroni: ${s.n80_b}
+- 90% — No correction: ${s.n90_n} | Bonferroni: ${s.n90_b}
+
+Assumptions
+- Continuous outcome, approximately normal distribution.
+- Similar SD across groups (pooled equal-variance t‑test).
+- Independent observations; equal per‑group n.
+
+`;
+      try{
+        await navigator.clipboard.writeText(text);
+        if (copyOk) { copyOk.style.display="inline"; setTimeout(()=>copyOk.style.display="none",2000); }
+      }catch(e){
+        try{
+          const ta=document.createElement("textarea"); ta.value=text;
+          document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
+          if (copyOk) { copyOk.style.display="inline"; setTimeout(()=>copyOk.style.display="none",2000); }
+        }catch(_){
+          if (copyFail) { copyFail.style.display="inline"; setTimeout(()=>copyFail.style.display="none",2000); }
+        }
+      }
+    };
+  }
+});
+</script>
+</body>
+</html>
